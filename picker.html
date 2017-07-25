@@ -4,7 +4,7 @@
     <style>
     body {
       margin: 0;
-      padding: 9;
+      padding: 0;
     }
     </style>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
@@ -41,9 +41,10 @@
         addView(google.picker.ViewId.DOCS)
         .setOrigin("https://sqrrrl.github.io/test")
         .setOAuthToken(token)
+        .hideTitleBar();
         .setDeveloperKey("AIzaSyAae3pBhHVD7cDL0CsTx3gPmASk-Zfrf2s")
         .enableFeature(google.picker.Feature.NAV_HIDDEN)
-        .setSize(window.width, window.height)
+        .setSize(window.width - 2, window.height - 2)
         .setCallback(function(data) {
           console.log("Sending response");
           window.opener.postMessage(data, "*");
