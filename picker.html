@@ -2,44 +2,44 @@
 <html>
   <head>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script>
+    var resolveFn;
+    var picker = new Promise(function(resolve, reject) {
+        resolveFn = resolve;
+    })
+
+    function onApiLoad() {
+      console.log("Api loaded");
+      resolveFn();
+    }
+
+    // Called sometime after postMessage is called
+    function receiveMessage(event) {
+      console.log("Received", event);
+      //if (event.origin !== "http://example.com:8080")
+      //  return;
+
+      picker.then(function() {
+        console.log("Showing picker");
+        const accessToken = event.data;
+        var picker = new google.picker.PickerBuilder().
+          addView(google.picker.ViewId.DOCS).
+          setOAuthToken(accessToken).
+          setCallback(function(data) {
+            console.log("Sending response");
+            event.source.postMessage(data, event.origin);
+          }).build();
+        picker.setVisible(true);
+      });
+    }
+
+    console.log("Listening");
+    window.addEventListener("message", receiveMessage, false);
+
+    </script>
   </head>
   <body>
 
   </body>
-  <script>
-  var resolveFn;
-  var picker = new Promise(function(resolve, reject) {
-      resolveFn = resolve;
-  })
-
-  function onApiLoad() {
-    console.log("Api loaded");
-    resolveFn();
-  }
-
-  // Called sometime after postMessage is called
-  function receiveMessage(event) {
-    console.log("Received", event);
-    //if (event.origin !== "http://example.com:8080")
-    //  return;
-
-    picker.then(function() {
-      console.log("Showing picker");
-      const accessToken = event.data;
-      var picker = new google.picker.PickerBuilder().
-        addView(google.picker.ViewId.DOCS).
-        setOAuthToken(accessToken).
-        setCallback(function(data) {
-          console.log("Sending response");
-          event.source.postMessage(data, event.origin);
-        }).build();
-      picker.setVisible(true);
-    });
-  }
-
-  console.log("Listening");
-  window.addEventListener("message", receiveMessage, false);
-
-  </script>
   <script type="text/javascript" src="https://apis.google.com/js/picker:api.js?onload=onApiLoad"></script>
 </html>
