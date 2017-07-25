@@ -13,7 +13,7 @@
       // The Client ID obtained from the Google API Console. Replace with your own Client ID.
     var clientId = "86733747129-1sh6ti1td0ug8l6c13s5tctugf93lkat.apps.googleusercontent.com"
 
-    var scope = ['https://www.googleapis.com/auth/drive'];
+    var scope = ['https://www.googleapis.com/auth/drive.file'];
     var oauthToken = null;
 
     var picker = new Promise(function(resolve, reject) {
@@ -25,7 +25,7 @@
       window.gapi.auth.authorize({
               'client_id': clientId,
               'scope': scope,
-              'immediate': false
+              'immediate': true
             }, handleAuthResult);
     }
 
