@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <base target="_top">
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
   </head>
   <body>
 
   </body>
   <script>
+  var resolveFn;
+  var picker = new Promise(function(resolve, reject) {
+      resolveFn = resolve;
+  })
+
   function onApiLoad() {
-    window.addEventListener("message", receiveMessage, false);
-  }
-
-  function showPicker() {
-  }
-
-  function pickerCallback(data) {
-    if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
-      var doc = data[google.picker.Response.DOCUMENTS][0];
-      url = doc[google.picker.Document.URL];
-    }
-    var message = 'You picked: ' + url;
-    document.getElementById('result').innerHTML = message;
+    resolveFn();
   }
 
   // Called sometime after postMessage is called
-function receiveMessage(event)
-{
-  //if (event.origin !== "http://example.com:8080")
-  //  return;
+  function receiveMessage(event) {
+    //if (event.origin !== "http://example.com:8080")
+    //  return;
 
-  const accessToken = event.data;
-  var picker = new google.picker.PickerBuilder().
-    addView(google.picker.ViewId.DOCS).
-    setOAuthToken(accessToken).
-    setCallback(function(data) {
-      event.source.postMessage(data, event.origin);
-    }).build();
-  picker.setVisible(true);
-}
+    picker.then(function() {
+      const accessToken = event.data;
+      var picker = new google.picker.PickerBuilder().
+        addView(google.picker.ViewId.DOCS).
+        setOAuthToken(accessToken).
+        setCallback(function(data) {
+          event.source.postMessage(data, event.origin);
+        }).build();
+      picker.setVisible(true);
+    });
+  }
+
+  window.addEventListener("message", receiveMessage, false);
 
   </script>
   <script type="text/javascript" src="https://apis.google.com/js/picker:api.js?onload=onApiLoad"></script>
