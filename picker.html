@@ -29,7 +29,7 @@
             }, handleAuthResult);
     }
 
-    function handleAuthResult() {
+    function handleAuthResult(authResult) {
       if (authResult && !authResult.error) {
          createPicker(authResult.access_token);
        }
