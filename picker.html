@@ -6,6 +6,12 @@
       margin: 0;
       padding: 0;
     }
+    .picker-dialog, .picker-dialog-content {
+        width: 100% !important;
+        height: 100% !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
     </style>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script>
@@ -46,8 +52,12 @@
         .enableFeature(google.picker.Feature.NAV_HIDDEN)
         .setSize(window.width - 2, window.height - 2)
         .setCallback(function(data) {
-          console.log("Sending response");
-          window.opener.postMessage(data, "*");
+          if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+            console.log("Sending response");
+            window.opener.postMessage(data, "*");
+          } else if (data[google.picker.Response.ACTION] == google.picker.Action.CANCEL) {
+            window.close();
+          }
         })
         .build();
       picker.setVisible(true);
