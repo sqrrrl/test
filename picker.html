@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <style>
+    body {
+      margin: 0;
+      padding: 9;
+    }
+    </style>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script>
     var resolveFn;
@@ -23,12 +29,17 @@
         console.log("Showing picker");
         const accessToken = event.data;
         var picker = new google.picker.PickerBuilder().
-          addView(google.picker.ViewId.DOCS).
-          setOAuthToken(accessToken).
-          setCallback(function(data) {
+          addView(google.picker.ViewId.DOCS)
+          .setOrigin("https://sqrrrl.github.io/test")
+          .setOAuthToken(accessToken)
+          .setDeveloperKey("AIzaSyAae3pBhHVD7cDL0CsTx3gPmASk-Zfrf2s")
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .setSize(window.width, window.height)
+          .setCallback(function(data) {
             console.log("Sending response");
             event.source.postMessage(data, event.origin);
-          }).build();
+          })
+          .build();
         picker.setVisible(true);
       });
     }
